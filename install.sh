@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Fly 技能 -- 跨 Agent 一键安装 v4
+# Fly æè½ -- è·¨ Agent ä¸é®å®è£ v4
 # ==============================================================================
-# 职责 ONLY: 把 fly SKILL.md 安装到各 agent 的 skills 目录。
-# Fly 生态初始化（~/.fly/、venv、胶囊下载）由 agent 读 SKILL.md 后执行。
+# èè´£ ONLY: æ fly SKILL.md å®è£å°å agent ç skills ç®å½ã
+# Fly çæåå§åï¼~/.fly/ãvenvãè¶åä¸è½½ï¼ç± agent è¯» SKILL.md åæ§è¡ã
 # ==============================================================================
-# 用法:
+# ç¨æ³:
 #   curl -fsSL https://flytomusk.xyz/install.sh | bash
-#   或通过 npx skills:
+#   æéè¿ npx skills:
 #   npx skills add 1392324000/fly_to_Musk --skill fly --agent '*' -g -y
 # ==============================================================================
 set -euo pipefail
@@ -20,9 +20,9 @@ warn()  { echo -e "${YELLOW}WARN${NC}  $1"; }
 
 HUB_URL="${1:-${FLY_HUB_URL:-https://flytomusk.xyz}}"
 
-echo -e "\n${BOLD}╔══════════════════════════════════════════╗${NC}"
-echo -e "${BOLD}║   Fly 技能 -- 跨 Agent 安装              ║${NC}"
-echo -e "${BOLD}╚══════════════════════════════════════════╝${NC}\n"
+echo -e "\n${BOLD}ââââââââââââââââââââââââââââââââââââââââââââ${NC}"
+echo -e "${BOLD}â   Fly æè½ -- è·¨ Agent å®è£              â${NC}"
+echo -e "${BOLD}ââââââââââââââââââââââââââââââââââââââââââââ${NC}\n"
 
 AGENT_COUNT=0
 
@@ -34,7 +34,7 @@ install_fly_skill() {
   if [ -d "$HOME/$agent_dir" ]; then
     mkdir -p "$target"
     curl -fsSL "$HUB_URL/bootstrap/fly.md" > "$target/SKILL.md" 2>/dev/null && {
-      ok "  ${agent_name} -> ~/${agent_dir}/fly/"
+      ok "  ${agent_name} â ~/${agent_dir}/fly/"
       AGENT_COUNT=$((AGENT_COUNT + 1))
     } || warn "  ${agent_name} -- download failed"
   fi
@@ -42,20 +42,20 @@ install_fly_skill() {
 
 # Layer 1: npx skills ecosystem (68+ agents)
 if command -v npx &>/dev/null; then
-  info "npx detected, installing via Vercel skills ecosystem..."
+  info "æ£æµå° npxï¼éè¿ Vercel skills çæå®è£..."
   if npx skills add 1392324000/fly_to_Musk --skill fly --agent '*' -g -y 2>/dev/null; then
-    ok "Vercel skills install complete"
+    ok "Vercel skills å®è£å®æ"
     AGENT_COUNT=$((AGENT_COUNT + 1))
   else
-    warn "npx skills failed, falling back to direct sniffing..."
+    warn "npx skills å¤±è´¥ï¼éçº§å°ç´æ¥åæ¢..."
   fi
 else
-  warn "npx not found (Node.js required), using direct file copy..."
+  warn "æªå®è£ npxï¼é Node.jsï¼ï¼ä½¿ç¨ç´æ¥æä»¶å¤å¶..."
 fi
 
 # Layer 2: direct agent path sniffing (fallback)
 if [ "$AGENT_COUNT" -eq 0 ] || ! command -v npx &>/dev/null; then
-  info "Sniffing agent paths..."
+  info "éè¿ agent è·¯å¾åæ¢å®è£..."
   install_fly_skill ".hermes/skills"          "Hermes Agent"
   install_fly_skill ".claude/skills"          "Claude Code"
   install_fly_skill ".cursor/skills"          "Cursor"
@@ -65,17 +65,18 @@ if [ "$AGENT_COUNT" -eq 0 ] || ! command -v npx &>/dev/null; then
   install_fly_skill ".continue/skills"        "Continue"
   install_fly_skill ".roo/skills"             "Roo Code"
   install_fly_skill ".openhands/skills"       "OpenHands"
+  install_fly_skill ".openclaw/skills"        "OpenClaw"
 
   if [ "$AGENT_COUNT" -eq 0 ]; then
-    warn "No known agents detected."
-    echo "Manual: mkdir -p ~/<agent>/skills/fly && curl -fsSL $HUB_URL/bootstrap/fly.md > ~/<agent>/skills/fly/SKILL.md"
+    warn "æªæ£æµå°ä»»ä½å·²ç¥ agentã"
+    echo "æå¨å®è£: mkdir -p ~/<agent>/skills/fly && curl -fsSL $HUB_URL/bootstrap/fly.md > ~/<agent>/skills/fly/SKILL.md"
   fi
 fi
 
 echo ""
 if [ "$AGENT_COUNT" -gt 0 ]; then
-  echo -e "${GREEN}Done!${NC} Installed fly skill to $AGENT_COUNT agent(s)."
+  echo -e "${GREEN}â å®è£å®æï¼${NC} å·²å®è£å° $AGENT_COUNT ä¸ª agentã"
 else
-  echo -e "${YELLOW}Not installed to any agent.${NC}"
+  echo -e "${YELLOW}â ï¸  æªå®è£å°ä»»ä½ agentã${NC}"
 fi
-echo "Open any agent and type 'fly' to start initialization."
+echo "æå¼ä»»ä¸ agentï¼è¾å¥ fly å³å¯å¯å¨åå§åã"
